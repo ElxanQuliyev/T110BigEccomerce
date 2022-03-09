@@ -8,7 +8,6 @@ namespace Entities
         public string Address { get; set; }
         public int? PictureID { get; set; }
         public virtual Picture Picture { get; set; }
-
         public DateTime? RegisteredOn { get; set; }
     }
 

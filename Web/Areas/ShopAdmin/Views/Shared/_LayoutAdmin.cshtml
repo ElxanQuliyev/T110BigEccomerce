@@ -18,6 +18,8 @@
     <link href="/adminFront/assets/css/icons.css" rel="stylesheet" type="text/css">
     <link href="/adminFront/assets/css/flag-icon.min.css" rel="stylesheet" type="text/css">
     <link href="/adminFront/assets/css/style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/6.0.0-beta.2/dropzone.min.css" />
+
     <!-- End css -->
 </head>
 <body class="vertical-layout">
@@ -518,6 +520,7 @@
     <script src="/adminFront/assets/plugins/switchery/switchery.min.js"></script>
     <!-- Core js -->
     <script src="/adminFront/assets/js/core.js"></script>
+    @await RenderSectionAsync("Scripts",required:false)
     <!-- End js -->
 </body>
 </html>

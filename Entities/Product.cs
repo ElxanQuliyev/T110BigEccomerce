@@ -22,7 +22,6 @@ namespace Entities
         public ushort InStock { get; set; }
         public virtual List<ProductRecord> ProductRecords { get; set; }
         public virtual List<ProductPicture> ProductPictures { get; set; }
-
         public virtual Category Category { get; set; }
     }
 

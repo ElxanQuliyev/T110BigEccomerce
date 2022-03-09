@@ -36,14 +36,23 @@ namespace Services
             selectedProduct.IsDeleted = true;
             await _context.SaveChangesAsync();
         }
-        public async Task<List<Product>> GetAll()
+        public List<Product> GetAll(Func<Product,bool> filter=null)
         {
-            return await _context.Products.
-                Where(x =>!x.IsDeleted)
-                .Include(p=>p.Category)
+            return  _context.Products
+                .Where(p=>!p.IsDeleted)
+                .Include(p => p.Category)
                 .Include(p => p.ProductRecords)
                 .Include(p => p.ProductPictures).ThenInclude(p => p.Picture)
-                .OrderByDescending(c=>c.ModifiedOn).ToListAsync();
+                .Where(filter)
+                .OrderByDescending(c=>c.ModifiedOn).ToList();
+        }
+        public async Task<List<Product>> GetAllAdmin()
+        {
+            return await _context.Products.
+                Where(x => !x.IsDeleted)
+                .Include(p => p.Category)
+                .Include(p => p.ProductRecords)
+                .OrderByDescending(c => c.ModifiedOn).ToListAsync();
         }
 
         public async Task<List<Product>> SearchProduct(string? q,int? categoryId,decimal? minPrice,decimal? maxPrice,int? sortBy)
@@ -83,7 +92,9 @@ namespace Services
 
         public async Task<Product?> GetById(int id)
         {
-            var selectedProduct = await _context.Products.FirstOrDefaultAsync(p=>!p.IsDeleted && p.Id==id);
+            var selectedProduct = await _context.Products
+                .Include(c=>c.ProductRecords).Include(c=>c.ProductPictures).ThenInclude(c=>c.Picture)
+                .FirstOrDefaultAsync(p=>!p.IsDeleted && p.Id==id);
             if (selectedProduct == null) return null;
             return selectedProduct;
         }

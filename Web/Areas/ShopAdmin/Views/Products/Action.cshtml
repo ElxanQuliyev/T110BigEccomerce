@@ -1,0 +1,157 @@
+﻿@model ProductActionViewModel
+
+@{
+    ViewData["Title"] = "Action";
+    if (Model != null)
+    {
+        if (Model.ProductId > 0)
+        {
+            Model.PageTitle = "Edit Product";
+        }
+        else
+        {
+            Model.PageTitle = "Create Product";
+        }
+    }
+}
+
+
+<h1>@Model.PageTitle</h1>
+
+<h4>Product</h4>
+<hr />
+<div class="row">
+    <div class="col-md-5">
+        <form asp-action="Action" id="createForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ProductId" class="form-control" />
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Summary" class="control-label"></label>
+                <input asp-for="Summary" class="form-control" />
+                <span asp-validation-for="Summary" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Discount" class="control-label"></label>
+                <input asp-for="Discount" class="form-control" />
+                <span asp-validation-for="Discount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsFeatured" /> @Html.DisplayNameFor(model => model.IsFeatured)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="DayProduct" /> @Html.DisplayNameFor(model => model.DayProduct)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsSlider" /> @Html.DisplayNameFor(model => model.IsSlider)
+                </label>
+            </div>
+            @*     <div class="form-group">
+                <label asp-for="CoverPhotoId" class="control-label"></label>
+                <input asp-for="CoverPhotoId" class="form-control" />
+                <span asp-validation-for="CoverPhotoId" class="text-danger"></span>
+                </div>*@
+
+
+
+            <div class="form-group">
+                <label asp-for="StockQuantity" class="control-label"></label>
+                <input asp-for="StockQuantity" class="form-control" />
+                <span asp-validation-for="StockQuantity" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary btn-create" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-7">
+        @*<form id="imageUpload" action="/target" class="dropzone">
+            </form>*@
+        <form class="dropzone" id="imageUpload" autocomplete="off" enctype="multipart/form-data"></form>
+
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/6.0.0-beta.2/dropzone-min.js"></script>
+<script>
+    $(document).ready(function(){
+    let myDropzone = new Dropzone("#imageUpload", {
+              url:"/shopadmin/products/create",
+              autoProcessQueue: false,
+              uploadMultiple: true,
+              parallelUploads: 100,
+              maxFiles: 100,
+
+              // The setting up of the dropzone
+              init: function() {
+                var myDropzone = this;
+                // First change the button to actually tell Dropzone to process the queue.
+                document.querySelector(".btn-create").addEventListener("click", function(e) {
+                  // Make sure that the form isn't actually being sent.
+                  e.preventDefault();
+                  e.stopPropagation();
+                  myDropzone.processQueue();
+                });
+
+                // Listen to the sendingmultiple event. In this case, it's the sendingmultiple event instead
+                // of the sending event because uploadMultiple is set to true.
+                this.on("sendingmultiple", function(file,xhr,formData) {
+                  // Gets triggered when the form is actually being sent.
+                  // Hide the success button or the complete form.
+                      var data=$("#createForm").serializeArray();
+                      console.log(formData)
+                        $.each(data,function(key,el){
+                            formData.append(el.name,el.value)
+                        })
+                    console.log(formData)
+                });
+                this.on("successmultiple", function(files, response) {
+                  // Gets triggered when the files have successfully been sent.
+                  // Redirect user or notify of success.
+                });
+                this.on("errormultiple", function(files, response) {
+                  // Gets triggered when there was an error sending the files.
+                  // Maybe show form again, and notify user of error
+                });
+                }
+
+    });
+    });
+
+
+
+
+</script>
+}

@@ -1,0 +1,27 @@
+﻿@model List<Category>
+<nav id="mobile-menu" style="display: block;">
+    <ul>
+        @foreach (var item in Model)
+        {
+            var catRecord = item.CategoryRecords.FirstOrDefault(c => c.LanguageID == 1);
+            <li>
+                <a href="shop.html">@catRecord.Name</a>
+                <ul class="mega-menu">
+                    <li>
+                        <a href="shop.html">Test</a>
+                        <ul class="mega-item">
+                            <li><a href="product-details.html">Standard SHop Page</a></li>
+                            <li><a href="product-details.html">Shop Right Sidebar</a></li>
+                            <li><a href="product-details.html">Shop Left Sidebar</a></li>
+                            <li><a href="product-details.html">Shop 3 Column</a></li>
+                            <li><a href="product-details.html">Shop 4 Column</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        }
+
+    </ul>
+</nav>
+
+

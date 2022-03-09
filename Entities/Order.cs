@@ -21,6 +21,6 @@
         public virtual Promo Promo { get; set; }
 
         public virtual List<OrderItem> OrderItems { get; set; } = null!;
-        public virtual List<OrderHistory>? OrderHistory { get; set; }
+        public virtual List<OrderHistory>? OrderHistories { get; set; }
     }
 }

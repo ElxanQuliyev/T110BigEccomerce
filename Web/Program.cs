@@ -13,6 +13,8 @@ builder.Services.AddDefaultIdentity<ECommerceUser>(options => options.SignIn.Req
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AgencyContext>();
 builder.Services.AddScoped<ProductManager>();
+builder.Services.AddScoped<CategoryManager>();
+
 
 var app = builder.Build();
 
@@ -31,12 +33,27 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
+app.MapControllerRoute(
+    name: "EntityCreate",
+    "{area:exists}/{controller=Products}/Create/",
+    new { action = "Action" }
+);
+
+app.MapControllerRoute(
+    name: "EntityEdit",
+    "{area:exists}/{controller=Products}/Edit/{id?}",
+    new { action = "Action" }
+);
+
 app.MapControllerRoute(
       name: "areas",
       pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
     );
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
+app.MapRazorPages();
 app.Run();
