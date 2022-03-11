@@ -113,7 +113,10 @@
               uploadMultiple: true,
               parallelUploads: 100,
               maxFiles: 100,
-
+              addRemoveLinks: true,
+               thumbnail: function(file, dataUrl) {
+    // Display the image in your file.previewElement
+},
               // The setting up of the dropzone
               init: function() {
                 var myDropzone = this;
@@ -146,7 +149,7 @@
                   // Maybe show form again, and notify user of error
                 });
                 }
-
+            
     });
     });
 

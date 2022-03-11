@@ -11,10 +11,12 @@ namespace Web.Areas.ShopAdmin.Controllers
     {
         private readonly ProductManager _productManager;
         private readonly IWebHostEnvironment _env;
-        public ProductsController(ProductManager productManager, IWebHostEnvironment env)
+        private readonly PictureManager _pictureManager;
+        public ProductsController(ProductManager productManager, IWebHostEnvironment env, PictureManager pictureManager)
         {
             _productManager = productManager;
             _env = env;
+            _pictureManager = pictureManager;
         }
 
         // GET: ProductsController
@@ -65,7 +67,7 @@ namespace Web.Areas.ShopAdmin.Controllers
         // POST: ProductsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Action(int? id,IFormCollection collection)
+        public async Task<IActionResult> Action(int? id,IFormCollection collection)
         {
             var model = GetProductActionViewModelFromForm(collection);
             try
@@ -77,22 +79,57 @@ namespace Web.Areas.ShopAdmin.Controllers
                 {
                     Directory.CreateDirectory(upd);
                 }
-
-                foreach (var picture in pictureList)
-                {
-                    string fileName = Guid.NewGuid() + picture.FileName;
-                    string fileRoot = Path.Combine(rootFile, fileName);
-                    using FileStream stream = new(fileRoot, FileMode.Create);
-                    picture.CopyTo(stream);
-                }
                 if (id.HasValue)
                 {
-
                 }
                 else
                 {
-                    Product product = new Product();
+                    Product product = new()
+                    {
+                        CategoryId = model.CategoryID,
+                        Price = model.Price,
+                        Discount = model.Discount,
+                        InStock = (ushort)model.StockQuantity,
+                        IsFeatured = model.IsFeatured,
+                        IsSlider = model.IsSlider,
+                        ModifiedOn = DateTime.Now,
+                        PublishDate = DateTime.Now,
+                        IsDay = model.DayProduct
+                    };
 
+                    if (pictureList != null && pictureList.Count>0)
+                    {
+                        product.ProductPictures = new List<ProductPicture>();
+                        foreach (var picture in pictureList)
+                        {
+                            string fileName = Guid.NewGuid() + picture.FileName;
+                            string fileRoot = Path.Combine(rootFile, fileName);
+                            using FileStream stream = new(fileRoot, FileMode.Create);
+                            picture.CopyTo(stream);
+                            Picture newPicture = new()
+                            {
+                                URL="/uploads/"+fileName
+                            };
+
+                            //Picture Added sql code...
+                            await _pictureManager.AddPicture(newPicture);
+                            product.ProductPictures.Add(
+                                new ProductPicture { PictureID = newPicture.Id, ProductID = product.Id }
+                             );
+                        }
+                    }
+
+                    var currentLanguageRecord = new ProductRecord
+                    {
+                        ProductId = product.Id,
+                        LanguageId = 1,
+                        Name = model.Name,
+                        Summary = model.Summary,
+                        Description = model.Description,
+                    };
+                    product.ProductRecords = new();
+                    product.ProductRecords.Add(currentLanguageRecord);
+                    await _productManager.Add(product);
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -107,7 +144,7 @@ namespace Web.Areas.ShopAdmin.Controllers
             var model = new ProductActionViewModel
             {
                 ProductId=!string.IsNullOrEmpty(collection["ProductId"]) ? int.Parse(collection["ProductId"]) : 0,
-                CategoryID = int.Parse(collection["CategoryID"]),
+                CategoryID = !string.IsNullOrEmpty(collection["CategoryID"]) ? int.Parse(collection["CategoryID"]) : 1,
                 Price = decimal.Parse(collection["Price"]),
                 Discount = !string.IsNullOrEmpty(collection["Discount"]) ? decimal.Parse(collection["Discount"]) : 0,
                 StockQuantity = int.Parse(collection["StockQuantity"]),

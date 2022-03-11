@@ -14,7 +14,7 @@ builder.Services.AddDefaultIdentity<ECommerceUser>(options => options.SignIn.Req
     .AddEntityFrameworkStores<AgencyContext>();
 builder.Services.AddScoped<ProductManager>();
 builder.Services.AddScoped<CategoryManager>();
-
+builder.Services.AddScoped<PictureManager>();
 
 var app = builder.Build();
 
