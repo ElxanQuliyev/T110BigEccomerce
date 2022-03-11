@@ -18,11 +18,14 @@ namespace Services
             _context = context;
         }
 
-        public List<Category> GetAll(Func<Category,bool> filter = null)
+        public List<Category>? GetAll(Func<Category,bool>? filter=null)
         {
-            return _context.Categories
-                .Include(c=>c.CategoryRecords)
-                .Where(filter).ToList();
+            if (filter != null)
+            {
+                return _context.Categories.Include(c=>c.CategoryRecords).Where(filter).ToList();   
+            }
+
+            return _context.Categories.Include(c => c.CategoryRecords).ToList();
         }
     }
 }

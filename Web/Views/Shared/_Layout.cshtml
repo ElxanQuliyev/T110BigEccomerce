@@ -16,6 +16,7 @@
       <link rel="stylesheet" href="/assets/css/owl-carousel.css">
       <link rel="stylesheet" href="/assets/css/swiper-bundle.css">
       <link rel="stylesheet" href="/assets/css/backtotop.css">
+      <link rel="stylesheet" href="/assets/css/ui-range-slider.css">
       <link rel="stylesheet" href="/assets/css/magnific-popup.css">
       <link rel="stylesheet" href="/assets/css/nice-select.css">
       <link rel="stylesheet" href="/assets/flaticon/flaticon.css">
@@ -188,9 +189,9 @@
                         </div>
                         <div class="col-xl-5 col-lg-4 d-none d-lg-block">
                             <div class="header__search">
-                                <form action="#">
+                                <form asp-controller="Products" asp-action="Index">
                                     <div class="header__search-box">
-                                        <input class="search-input" type="text" placeholder="I'm shopping for...">
+                                        <input class="search-input" type="text" name="searchTerm" placeholder="I'm shopping for...">
                                         <button class="button" type="submit"><i class="far fa-search"></i></button>
                                     </div>
                                     <div class="header__search-cat">
@@ -680,7 +681,7 @@
       <script src="/assets/js/isotope-pkgd.js"></script>
       <script src="/assets/js/imagesloaded-pkgd.js"></script>
       <script src="/assets/js/ajax-form.js"></script>
+       @await RenderSectionAsync("Scripts",required:false)
       <script src="/assets/js/main.js"></script>
-      @await RenderSectionAsync("Scripts",required:false)
    </body>
 </html>
