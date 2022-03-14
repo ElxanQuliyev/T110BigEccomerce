@@ -2,6 +2,17 @@
     ViewData["Title"] = "Index";
 }
 @model SearchProductVM
+<style>
+    .category-active {
+        color: #fcbe00 !important;
+    }
+    .disabled{
+        pointer-events:none !important;
+    }
+</style>
+<input type="hidden" id="catId" value="@Model.CategoryId"/>
+<input type="hidden" id="searchT" value="@Model.SearchTerm"/>
+
 <main>
     <!-- breadcrumb__area-start -->
     <section class="breadcrumb__area box-plr-75">
@@ -33,8 +44,10 @@
                             {
                                 var currentCategory = category.CategoryRecords.FirstOrDefault(c => c.LanguageID == 1);
                                 <div class="single-widget-category">
-                                    <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@category.Id">
-                                        <label for="cat-item-@(category.Id)">@currentCategory.Name <span>(30)</span></label>
+                                    <a asp-controller="Products" asp-action="Index"
+                                   asp-route-categoryId="@category.Id"
+                                   asp-route-searchTerm="@Model.SearchTerm">
+                                        <label class="@(Model.CategoryId==category.Id ? "category-active":"")" for="cat-item-@(category.Id)">@currentCategory.Name <span>(30)</span></label>
                                     </a>
                                 </div>
                             }
@@ -336,10 +349,10 @@
                                             </select>
                                         </div>
                                         <div class="product__sorting product__show-position ml-20">
-                                            <select>
-                                                <option>Latest</option>
-                                                <option>New</option>
-                                                <option>Up comeing</option>
+                                            <select name="sortBy">
+                                                <option value="0">Ən son</option>
+                                                <option value="1">Qiymət azdan çox</option>
+                                                <option value="2">Qiymət çoxdan aza</option>
                                             </select>
                                         </div>
                                     </div>
@@ -351,9 +364,9 @@
                         <div class="tab-pane fade  show active" id="FourCol" role="tabpanel" aria-labelledby="FourCol-tab">
                             <div class="tp-wrapper">
                                 <div class="row g-0">
-                                    @if(Model.Products!=null && Model.Products.Count > 0)
+                                    @if (Model.Products != null && Model.Products.Count > 0)
                                     {
-                                       @foreach (var item in Model.Products)
+                                        @foreach (var item in Model.Products)
                                         {
                                             var currentProductRec = item.ProductRecords.FirstOrDefault(c => c.LanguageId == 1);
                                             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
@@ -413,12 +426,13 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        } 
+                                        }
                                     }
-                                    else{
+                                    else
+                                    {
                                         <p class="alert alert-danger">Product Not Found..</p>
                                     }
-                                    
+
 
                                 </div>
                             </div>
@@ -984,6 +998,11 @@
                                 <div class="basic-pagination pt-30 pb-30">
                                     <nav>
                                         <ul>
+                                            <li class="">
+                                                <a class="@(Model.PageNo==1?"disabled d-none":"")" href="@Url.Action("Index","Products",new{pageNo=Model.PageNo-1})">
+                                                    <i class="fal fa-angle-double-left"></i>
+                                                </a>
+                                            </li>
                                             <li>
                                                 <a href="shop.html" class="active">1</a>
                                             </li>
@@ -999,8 +1018,8 @@
                                             <li>
                                                 <a href="shop.html">6</a>
                                             </li>
-                                            <li>
-                                                <a href="shop.html">
+                                            <li class="">
+                                                <a class="@(Model.MaxPage<=Model.PageNo*3?"disabled d-none":"")" href="@Url.Action("Index","Products",new{pageNo=Model.PageNo+1})">
                                                     <i class="fal fa-angle-double-right"></i>
                                                 </a>
                                             </li>
@@ -1155,4 +1174,14 @@
 
 @section Scripts{
 <script src="/assets/js/ui-slider-range.js"></script>
+<script>
+    $(".product__sorting select").change(function(){
+        const sortById=$(this).val();
+        let categoryId=$("#catId").val();
+        let searchText=$("#searchT").val();
+
+        document.location.href=
+        `/Products?sortBy=${sortById}&categoryId=${categoryId}&searchTerm=${searchText}`
+    })
+</script>
 }

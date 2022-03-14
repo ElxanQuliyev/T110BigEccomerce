@@ -1,0 +1,14 @@
+﻿@model SearchLayoutVM
+<form asp-controller="Products" asp-action="Index" method="get">
+    <div class="header__search-box">
+        <input type="hidden" asp-for="CategoryId"/> 
+        <input class="search-input" type="text" name="searchTerm" placeholder="I'm shopping for...">
+        <button class="button" type="submit"><i class="far fa-search"></i></button>
+    </div>
+</form>
+
+<script>    
+    const myUrl=document.location.search;
+    var url=new URLSearchParams(myUrl)
+    document.querySelector(".search-input").value=url.get("searchTerm");
+</script>

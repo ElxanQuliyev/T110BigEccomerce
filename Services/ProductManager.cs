@@ -55,17 +55,18 @@ namespace Services
                 .OrderByDescending(c => c.ModifiedOn).ToListAsync();
         }
 
-        public async Task<List<Product>> SearchProduct(string? q,int? categoryId,decimal? minPrice,decimal? maxPrice,int? sortBy)
+        public async Task<List<Product>> SearchProduct(string? q,int? categoryId,decimal? minPrice,decimal? maxPrice,int? sortBy,int pageNo)
         {
             var products = _context.Products
                 .Where(p=>!p.IsDeleted)
                 .Include(p => p.Category)
                 .Include(p => p.ProductRecords)
+                
                 .Include(p=>p.ProductPictures).ThenInclude(p=>p.Picture)
                 .AsQueryable();
             if (!string.IsNullOrWhiteSpace(q))
             {
-                products = products.Where(p => p.ProductRecords.Any(c => c.Name.ToLower().Contains(q.ToLower())));
+                products = products.Where(p => p.ProductRecords.Any(c => c.LanguageId==1 && c.Name.ToLower().Contains(q.ToLower())));
             }
             if (categoryId.HasValue)
             {
@@ -85,9 +86,14 @@ namespace Services
                     _ => products.OrderByDescending(c => c.PublishDate),
                 };
             }
+            int skipCount = (pageNo - 1) * 3;
 
+            return await products.Skip(skipCount).Take(3).ToListAsync();
+        }
 
-            return await products.ToListAsync();
+        public int ProductCount()
+        {
+            return _context.Products.Where(c=>!c.IsDeleted).Count();
         }
 
         public async Task<Product?> GetById(int id)
