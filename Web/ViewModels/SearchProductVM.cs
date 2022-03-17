@@ -1,4 +1,5 @@
 ﻿using Entities;
+using Web.Models;
 
 namespace Web.ViewModels
 {
@@ -13,6 +14,7 @@ namespace Web.ViewModels
         public decimal? MaxPrice { get; set; }
         public int? PageNo{ get; set; }
         public int MaxPage { get; set; }
+        public Pager Pager { get; set; }
 
     }
 }

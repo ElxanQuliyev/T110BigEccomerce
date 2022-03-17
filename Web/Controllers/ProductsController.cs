@@ -17,19 +17,21 @@ namespace Web.Controllers
         public async Task<IActionResult> Index(int? categoryId, string? searchTerm,decimal? minPrice,decimal? maxPrice,int? sortBy,int? PageNo)
         {
             PageNo ??= 1;
+            int recordSize = 3;
             var searchVm = new SearchProductVM()
             {
-                Products = await _productManager.SearchProduct(searchTerm, categoryId, minPrice, maxPrice, sortBy,PageNo.Value),
+                Products = await _productManager.SearchProduct(searchTerm, categoryId, minPrice, maxPrice, sortBy,PageNo.Value,recordSize),
                 SearchTerm = searchTerm,
                 CategoryId = categoryId,
                 MinPrice = minPrice,
                 MaxPrice = maxPrice,
                 SortBy = sortBy,
                 PageNo = PageNo,
-                MaxPage=_productManager.ProductCount(),
                 Categories=_categoryManager.GetAll()
             };
-               
+            searchVm.MaxPage = _productManager.ProductCount();
+
+            searchVm.Pager = new Models.Pager(searchVm.MaxPage, PageNo, recordSize, 3);
             return View(searchVm);
         }
     }

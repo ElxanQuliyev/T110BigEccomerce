@@ -6,12 +6,13 @@
     .category-active {
         color: #fcbe00 !important;
     }
-    .disabled{
-        pointer-events:none !important;
+
+    .disabled {
+        pointer-events: none !important;
     }
 </style>
-<input type="hidden" id="catId" value="@Model.CategoryId"/>
-<input type="hidden" id="searchT" value="@Model.SearchTerm"/>
+<input type="hidden" id="catId" value="@Model.CategoryId" />
+<input type="hidden" id="searchT" value="@Model.SearchTerm" />
 
 <main>
     <!-- breadcrumb__area-start -->
@@ -999,27 +1000,25 @@
                                     <nav>
                                         <ul>
                                             <li class="">
-                                                <a class="@(Model.PageNo==1?"disabled d-none":"")" href="@Url.Action("Index","Products",new{pageNo=Model.PageNo-1})">
+                                                <a class="@(Model.PageNo==1?"disabled d-none":"")"
+                                                   href="@Url.Action("Index","Products",new{pageNo=Model.Pager.CurrentPage-1})">
                                                     <i class="fal fa-angle-double-left"></i>
                                                 </a>
                                             </li>
-                                            <li>
-                                                <a href="shop.html" class="active">1</a>
-                                            </li>
-                                            <li>
-                                                <a href="shop.html">2</a>
-                                            </li>
-                                            <li>
-                                                <a href="shop.html">3</a>
-                                            </li>
-                                            <li>
-                                                <a href="shop.html">5</a>
-                                            </li>
-                                            <li>
-                                                <a href="shop.html">6</a>
-                                            </li>
+                                            @for (int myPage = Model.Pager.StartPage; myPage < Model.Pager.EndPage + 1; myPage++)
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("Index","Products",new{pageNo=myPage})"
+                                                       class="@(Model.Pager.CurrentPage==myPage?"active":"")">
+                                                         @myPage
+                                                       </a>
+                                                </li>
+                                            }
+
+
                                             <li class="">
-                                                <a class="@(Model.MaxPage<=Model.PageNo*3?"disabled d-none":"")" href="@Url.Action("Index","Products",new{pageNo=Model.PageNo+1})">
+                                                <a class="@(Model.MaxPage<=Model.PageNo * Model.Pager.PageSize?"disabled d-none":"")"
+                                                   href="@Url.Action("Index","Products",new{pageNo=Model.Pager.CurrentPage+1})">
                                                     <i class="fal fa-angle-double-right"></i>
                                                 </a>
                                             </li>
